@@ -8,38 +8,42 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-  
+
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
 jobs:
   build:
+    permissions:
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
     steps:
-    - name: 📂 checkout
-      uses: actions/checkout@v3
+      - name: 📂 checkout
+        uses: actions/checkout@v4.2.2
 
-    - name: 💎 setup ruby
-      uses: ruby/setup-ruby@ee2113536afb7f793eed4ce60e8d3b26db912da4 # v1.127.0
-      with:
-        bundler-cache: true
-        cache-version: 0
+      - name: 💎 setup ruby
+        uses: ruby/setup-ruby@28c4deda893d5a96a6b2d958c5b47fc18d65c9d3 # v1.213.0
+        with:
+          bundler-cache: true
+          cache-version: 0
 
-    - name: 📄 setup pages
-      id: pages
-      uses: actions/configure-pages@v3
+      - name: 📄 setup pages
+        id: pages
+        uses: actions/configure-pages@v5.0.0
 
-    - name: 🔨 install dependencies & build site
-      uses: actions/jekyll-build-pages@v1.0.7
-      
-    - name: ⚡️ upload artifact
-      uses: actions/upload-pages-artifact@v1
+      - name: 🔨 install dependencies & build site
+        uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1.0.13
+
+      - name: ⚡️ upload artifact
+        uses: actions/upload-pages-artifact@v3.0.1
 
   deploy:
     needs: build
+    permissions:
+      pages: write
+      id-token: write
 
     environment:
       name: github-pages
@@ -49,4 +53,4 @@ jobs:
     steps:
       - name: 🚀 deploy
         id: deployment
-        uses: actions/deploy-pages@v1.2.4
+        uses: actions/deploy-pages@v4.0.5
